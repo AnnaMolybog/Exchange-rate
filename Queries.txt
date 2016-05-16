@@ -1,0 +1,37 @@
+CREATE TABLE currency (
+id_currency INT(4) AUTO_INCREMENT,
+currency_name VARCHAR (10) NOT NULL,
+PRIMARY KEY (id_currency)
+)
+CHARACTER SET utf8 COLLATE utf8_general_ci
+
+CREATE TABLE x_rate (
+id_rate INT (4), AUTO_INCREMENT,
+id_currency INT (4) NOT NULL,
+change_datetiem DATETIME NOT NULL,
+PRIMARY KEY (id_rate)
+)
+CHARACTER SET utf8 COLLATE utf8_general_ci
+
+SELECT c.currency_name, x.change_datetime, x.amount
+FROM x_rate AS x JOIN currency AS c ON x.id_currency = c.id_currency
+WHERE change_datetime LIKE '2016-05-12 %:%:%'
+ORDER BY c.id_currency
+
+SELECT c.currency_name, x.change_datetime, x.amount
+FROM x_rate AS x JOIN currency AS c ON x.id_currency = c.id_currency
+WHERE x.amount = (SELECT max(amount)
+FROM x_rate AS xr
+JOIN currency AS cu
+ON xr.id_currency = cu.id_currency
+WHERE cu.currency_name = c.currency_name)
+ORDER BY c.id_currency
+
+SELECT c.currency_name, x.change_datetime, x.amount
+FROM x_rate AS x JOIN currency AS c ON x.id_currency = c.id_currency
+WHERE x.change_datetime = (SELECT max(change_datetime)
+FROM x_rate AS xr
+JOIN currency AS cu
+ON xr.id_currency = cu.id_currency
+WHERE cu.currency_name = c.currency_name)
+ORDER BY c.id_currency
